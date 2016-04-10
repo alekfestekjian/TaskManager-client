@@ -1,0 +1,10 @@
+<a class="button" ng-href="#/adduser">Add User</a>
+<ul>
+    <li class="user-list" ng-repeat="user in users">
+        <div class="row">
+            <div class="small-4 columns"><a ng-href="#/userdetails/{{user._id}}">{{user.name}}</a></div>
+            <div class="small-4 columns">{{user.email}}</div>
+            <div class="small-4 columns text-right"><button class="alert button" ng-click="remove(user._id)">Delete</button></div>
+        </div>
+    </li>
+</ul>
