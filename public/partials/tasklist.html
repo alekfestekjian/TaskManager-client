@@ -2,20 +2,20 @@
     <span><h1>Tasks</h1><h3>really important stuff</h3></span>
     <a class="button" ng-href="#/addtask">Add Task</a>
     <br>
-    <input type="radio"> Pending
-    <input type="radio"> Completed
-    <input type="radio"> All
+    <input type="radio" name="sorter" ng-click="sortBy = false"> Pending
+    <input type="radio" name="sorter" ng-click="sortBy = true"> Completed
+    <input type="radio" name="sorter" ng-click="sortBy = all"> All
     <br>
     <span>Sort By:</span>
-    <select ng-model="sort">
-        <option selected>dateCreated</option>
+    <select ng-model="sortWith">
+        <option selected ng-value="dateCreated">dateCreated</option>
         <option ng-value="deadline">deadline</option>
         <option ng-value="name">name</option>
         <option ng-value="assignedUsername">assignedUserName</option>
-      </select>
+    </select>
 
-    <input type="radio" ng-model="order" ng-value="true" checked> Ascending
-    <input type="radio" ng-model="order" ng-value="false"> Descending
+    <input type="radio" name="order" ng-click="order = 1" checked> Ascending
+    <input type="radio" name="order" ng-click="order = -1"> Descending
     <button type="button" class="disabled button" id="prev"name="previous" ng-click="previous()">Previous</button>
     <button type="button" class="button" id="next" name="button" ng-click="next()">Next</button>
     <ul>

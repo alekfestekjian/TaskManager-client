@@ -36,9 +36,10 @@ mp4Services.factory('Users', function($http, $window) {
             return $http.put(baseUrl+'/api/users/' + user._id,user);
 
         },
-        post : function(data) {
+        post : function(user) {
             var baseUrl = $window.sessionStorage.baseurl;
-            return $http.post(baseUrl+'/api/users/',data);
+            console.log(user);
+            return $http.post(baseUrl+'/api/users/',user);
 
         },
         remove : function(id) {

@@ -13,13 +13,11 @@ mp4Controllers.controller('AddTaskController', ['$scope','$http','$window' ,'Tas
             $scope.user_info = response.data;
             task.assignedUserName = response.data.name;
             Tasks.post(task).then(function(response) {
-                console.log($scope.user_info.pendingTasks);
-                $scope.user_info.pendingTasks.push();
-                Users.put($scope.user).success(function(data){
-                    alert("added to pending tasks");
+                $scope.user_id = response.data.data._id;
+                $scope.user_info.pendingTasks.push($scope.user_id);
+                Users.put($scope.user_info).success(function(data){
                 });
                 alert(response.data.message);
-
             },function failure(fail_response){
                 alert(fail_response.data.message);
             });
@@ -29,14 +27,15 @@ mp4Controllers.controller('AddTaskController', ['$scope','$http','$window' ,'Tas
 }]);
 mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Users', function($scope, $http,$window,Users) {
     $scope.addUser = function(user){
-        Users.post(user).then(function(response) {
+        Users.post(user).then(function(response,data) {
+            console.log(response.data);
             alert(response.data.message);
         },function failure(fail_response){
             alert(fail_response.data.message);
         });
     };
 }]);
-mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks', function($scope, $http,$window,Tasks){
+mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks','Users', function($scope, $http,$window,Tasks,Users){
     $scope.startNum = 0;
     Tasks.get().success(function(data){
         $scope.taskLen = data.data.length
@@ -46,13 +45,41 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
     });
 
     $scope.remove = function(id){
-        Tasks.remove(id).success(function(delete_data){
-            Tasks.getLimitTasks($scope.startNum).success(function(data){
-                $scope.tasks = data.data;
-            });
+        Tasks.getTask(id).success(function(task_data){
+            $scope.ownerID = task_data.data.assignedUser;
+            alert($scope.ownerID);
+            if($scope.ownerID != "unassigned"){
+                Users.getUser($scope.ownerID).success(function(response){
+                    $scope.user = response.data;
+                    console.log($scope.user.pendingTasks);
+                    $scope.index = $scope.user.pendingTasks.indexOf(id);
+                    if ($scope.index !== -1) {
+                        $scope.user.pendingTasks.splice($scope.index, 1);
+                    }
+                    Users.put($scope.user).success(function(response){
+                        alert("pushed user");
+                    });
+
+                    Tasks.remove(id).success(function(delete_data){
+                        // $scope.deleteUserId = delete_data.data.assignedUser;
+                        Tasks.getLimitTasks($scope.startNum).success(function(data){
+                            $scope.tasks = data.data;
+                        });
+                    });
+                });
+            }
+            else{
+                Tasks.remove(id).success(function(delete_data){
+                    // $scope.deleteUserId = delete_data.data.assignedUser;
+                    Tasks.getLimitTasks($scope.startNum).success(function(data){
+                        $scope.tasks = data.data;
+                    });
+                });
+            }
+
+
         });
     };
-
     $scope.next = function(){
         if($scope.startNum + 10 <= $scope.taskLen){
             $scope.startNum += 10;
@@ -80,7 +107,7 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
             document.getElementById("prev").className= "disabled button";
         }
         else{
-            document.getElementById("prev").className= "disabled button";
+            document.getElementById("prev").className= "button";
         }
         Tasks.getLimitTasks($scope.startNum).success(function(data){
             $scope.tasks = data.data;
@@ -118,7 +145,6 @@ mp4Controllers.controller('TaskDetailsController', ['$scope','$routeParams', '$h
     Tasks.getTask($routeParams.task_id).success(function(response) {
         $scope.task = response.data;
     });
-
 }]);
 mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '$http', '$window' , 'Users','Tasks', function($scope, $routeParams, $http, $window, Users,Tasks) {
     Users.getUser($routeParams.user_id).success(function(response) {
@@ -131,7 +157,6 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
         });
         Tasks.getCompletedTasks($scope.user._id).success(function(completed){
             $scope.completedTasks = completed.data;
-
         });
     });
 
