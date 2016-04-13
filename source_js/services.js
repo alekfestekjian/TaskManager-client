@@ -91,6 +91,64 @@ mp4Services.factory('Tasks', function($http, $window) {
         getCompletedTasks : function(id){
             var baseUrl = $window.sessionStorage.baseurl;
             return $http.get(baseUrl+'/api/tasks?where={"assignedUser": "'+id+'","completed": true }');
+        },
+        updateSorting : function(values,start){
+            var sorter = values[0];
+            var order = values[1];
+            var sortWith = values[2];
+            var baseUrl = $window.sessionStorage.baseurl;
+            console.log("Sortlen" +sorter);
+            if(sorter === 1){
+                sorter = "true";
+            }
+            if(sorter === 0){
+                sorter = "false"
+            }
+            if(order === false){
+                order = -1;
+            }
+            else{
+                order = 1;
+            }
+            if(sorter === 2){
+                console.log("HI")
+                return $http.get(baseUrl+'/api/tasks?sort={"'+sortWith+'": "'+order+'"}'+'&skip=' + start + '&limit=10');//'&sort={"'+sortWith+'":"'+ascending+'"}');
+
+            }
+            else{
+                return $http.get(baseUrl+'/api/tasks?where={"completed": "'+sorter+'"}&sort={"'+sortWith+'": "'+order+'"}'+'&skip=' + start + '&limit=10');//'&sort={"'+sortWith+'":"'+ascending+'"}');
+
+            }
+
+        },
+        getSortingLength : function(values,start){
+            var sorter = values[0];
+            var order = values[1];
+            var sortWith = values[2];
+            console.log(sorter);
+            var baseUrl = $window.sessionStorage.baseurl;
+
+            if(sorter === 2){
+                sorter = "all";
+            }
+            else if(sorter === 1){
+                sorter = "true";
+            }else{
+                sorter = "false"
+            }
+
+            if(order === false){
+                order = -1
+            }else{
+                order = 1
+            }
+            if(sorter === 2){
+                console.log("HI N")
+                return $http.get(baseUrl+'/api/tasks?sort={"'+sortWith+'":"'+order+'"}');
+            }
+            else{
+                return $http.get(baseUrl+'/api/tasks?where={"completed": "'+sorter+'"}&sort={"'+sortWith+'":"'+order+'"}');
+            }
         }
     }
 });

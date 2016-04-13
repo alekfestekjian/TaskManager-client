@@ -37,12 +37,47 @@ mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Use
 }]);
 mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks','Users', function($scope, $http,$window,Tasks,Users){
     $scope.startNum = 0;
-    Tasks.get().success(function(data){
-        $scope.taskLen = data.data.length
-    });
-    Tasks.getLimitTasks($scope.startNum).success(function(data){
+    // Tasks.get().success(function(data){
+    //     $scope.taskLen = data.data.length
+    // });
+    // Tasks.getLimitTasks($scope.startNum).success(function(data){
+    //     $scope.tasks = data.data;
+    // });
+
+    $scope.sorter = 1;
+    $scope.order = 1;
+    $scope.sortWith = "deadline";
+    $scope.valuesSort = [$scope.sorter,$scope.ascending,$scope.sortWith];
+    Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+        console.log("updating task");
         $scope.tasks = data.data;
     });
+
+    Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
+        console.log("getting len task");
+        $scope.taskLen = data.data.length;
+        console.log($scope.taskLen);
+    });
+
+    $scope.$watchGroup(['sorter','order','sortWith'], function(newValue, oldValue) {
+        $scope.valuesSort = [newValue[0],newValue[1],newValue[2]];
+        if(newValue[0] != oldValue[0]){
+            $scope.startNum = 0;
+            Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+                console.log("updating task");
+                $scope.tasks = data.data;
+                console.log($scope.taskLen);
+            });
+        }
+        else{
+            Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+                console.log("updating task");
+                $scope.tasks = data.data;
+            });
+        }
+
+    });
+    // $scope.sorter = 0;
 
     $scope.remove = function(id){
         Tasks.getTask(id).success(function(task_data){
@@ -51,7 +86,7 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
             if($scope.ownerID != "unassigned"){
                 Users.getUser($scope.ownerID).success(function(response){
                     $scope.user = response.data;
-                    console.log($scope.user.pendingTasks);
+                    // console.log($scope.user.pendingTasks);
                     $scope.index = $scope.user.pendingTasks.indexOf(id);
                     if ($scope.index !== -1) {
                         $scope.user.pendingTasks.splice($scope.index, 1);
@@ -62,8 +97,17 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
 
                     Tasks.remove(id).success(function(delete_data){
                         // $scope.deleteUserId = delete_data.data.assignedUser;
-                        Tasks.getLimitTasks($scope.startNum).success(function(data){
+                        // Tasks.getLimitTasks($scope.startNum).success(function(data){
+                        //     $scope.tasks = data.data;
+                        // });
+                        Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+                            console.log("updating task");
                             $scope.tasks = data.data;
+                        });
+                        Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
+                            console.log("getting len task");
+                            $scope.taskLen = data.data.length;
+                            console.log($scope.taskLen);
                         });
                     });
                 });
@@ -71,8 +115,17 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
             else{
                 Tasks.remove(id).success(function(delete_data){
                     // $scope.deleteUserId = delete_data.data.assignedUser;
-                    Tasks.getLimitTasks($scope.startNum).success(function(data){
+                    // Tasks.getLimitTasks($scope.startNum).success(function(data){
+                    //     $scope.tasks = data.data;
+                    // });
+                    Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+                        console.log("updating task");
                         $scope.tasks = data.data;
+                    });
+                    Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
+                        console.log("getting len task");
+                        $scope.taskLen = data.data.length;
+                        console.log($scope.taskLen);
                     });
                 });
             }
@@ -91,11 +144,14 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
         if($scope.startNum != 0 ){
             document.getElementById("prev").className= "button";
         }
-        Tasks.getLimitTasks($scope.startNum).success(function(data){
+        Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+            console.log("updating task");
             $scope.tasks = data.data;
         });
-        Tasks.get().success(function(data){
-            $scope.taskLen = data.data.length
+        Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
+            console.log("getting len task");
+            $scope.taskLen = data.data.length;
+            console.log($scope.taskLen);
         });
     };
     $scope.previous = function(){
@@ -109,12 +165,22 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
         else{
             document.getElementById("prev").className= "button";
         }
-        Tasks.getLimitTasks($scope.startNum).success(function(data){
+        Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
+            console.log("updating task");
             $scope.tasks = data.data;
         });
-        Tasks.get().success(function(data){
-            $scope.taskLen = data.data.length
+        Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
+            console.log("getting len task");
+            $scope.taskLen = data.data.length;
+            console.log($scope.taskLen);
         });
+
+        // Tasks.getLimitTasks($scope.startNum).success(function(data){
+        //     $scope.tasks = data.data;
+        // });
+        // Tasks.get().success(function(data){
+        //     $scope.taskLen = data.data.length
+        // });
     };
 }]);
 mp4Controllers.controller('UserListController', ['$scope','$http','$window' ,'Users','Tasks', function($scope, $http,$window,Users,Tasks) {
