@@ -193,6 +193,7 @@ mp4Controllers.controller('UserListController', ['$scope','$http','$window' ,'Us
             }
         });
         Users.remove(id).success(function(delete_data){
+            alert("User removed")
             Users.get().success(function(reload){
                 $scope.users = reload.data;
             });
