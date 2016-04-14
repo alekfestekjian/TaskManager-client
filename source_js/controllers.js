@@ -37,12 +37,6 @@ mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Use
 }]);
 mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks','Users', function($scope, $http,$window,Tasks,Users){
     $scope.startNum = 0;
-    // Tasks.get().success(function(data){
-    //     $scope.taskLen = data.data.length
-    // });
-    // Tasks.getLimitTasks($scope.startNum).success(function(data){
-    //     $scope.tasks = data.data;
-    // });
 
     $scope.sorter = 1;
     $scope.order = 1;
@@ -226,16 +220,19 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
         });
     });
 
-
+// Make it so if marked complete remove from users pending tasks
     $scope.complete = function(task){
-        console.log(task.completed);
-        console.log(task);
-
         task.completed = true;
         Tasks.put(task).success(function(data){
             Tasks.getPendingTasks($scope.id).success(function(data){
                 $scope.pendingTasks = data.data;
             });
+        });
+    }
+    $scope.showComplete = function(){
+        $scope.showCompleted = true
+        Tasks.getCompletedTasks($scope.user._id).success(function(completed){
+            $scope.completedTasks = completed.data;
         });
     }
 

@@ -20,18 +20,21 @@
 </head>
 
 <body ng-app="mp4">
+    <div id="header_row"class="row">
+        <div class="small-12 columns text-center">
+            <h1 class="header">Awesome Task Manager</h1>
+        </div>
+    </div>
     <div class="row">
-        <div class="small-9 columns">
+        <div id="partials" class="small-9 columns">
             <div ng-view></div>
         </div>
-        <div class="small-3 columns">
+        <div id="buttons" class="small-3 columns">
             <div class="row">
                 <a class="expanded button" href="#/settings">Settings</a>
-
             </div>
             <div class="row">
                 <a class="expanded button" href="#/userlist">Users</a>
-
             </div>
             <div class="row">
                 <a class="expanded button" href="#/tasklist">Task</a>

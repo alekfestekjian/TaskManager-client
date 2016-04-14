@@ -1,22 +1,46 @@
 <div>
     <h1>User Profile</h1>
-    <span>Name: {{user.name}} Email: {{user.email}}</span>
-    <ul>
-        <li class="user-tasks" ng-repeat="task in pendingTasks">
-            <div class="row">
-                <div class="small-4 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
-                <div class="small-4 columns">{{task.deadline}}</div>
-                <div class="small-4 columns text-right"><button class="alert button" ng-click="complete(task)">Complete</button></div>
-            </div>
-        </li>
-    </ul>
-    <button class="button" ng-click="showCompleted = true">Show Completed Tasks</button>
-    <ul>
-        <li class="completed-tasks" ng-show="showCompleted" ng-repeat="task in completedTasks">
-            <div class="row">
-                <div class="small-6 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
-                <div class="small-6 columns">{{task.deadline}}</div>
-            </div>
-        </li>
-    </ul>
+    <hr>
+    <div class="row">
+        <div class="small-6 columns"><h3>{{user.name}}</h3></div>
+        <div class="small-6 columns"><h3>{{user.email}}</h3></div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="small-12 columns"><h2>Pending Tasks</h2></div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <ul>
+                <li class="user-tasks" ng-repeat="task in pendingTasks">
+                    <hr>
+                    <div class="row">
+                        <div class="small-4 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
+                        <div class="small-4 columns">{{task.deadline}}</div>
+                        <div class="small-4 columns text-right"><button class="alert button" ng-click="complete(task)">Complete</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- <span>Name:  Email: </span> -->
+
+    <div class="row">
+        <div class="small-12 columns text-center"><button class="button" ng-click="showComplete()">Show Completed Tasks</button></div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <ul>
+                <li class="completed-tasks" ng-show="showCompleted" ng-repeat="task in completedTasks">
+                    <hr>
+                    <div class="row">
+                        <div class="small-6 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
+                        <div class="small-6 columns">{{task.deadline}}</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </div>

@@ -1,10 +1,19 @@
-<a class="button" ng-href="#/adduser">Add User</a>
+<div class="small-9 columns">
+    <span><strong>Users</strong>: a list of cool people</span>
+
+</div>
+<div class="small-3 columns">
+    <a id="add-user"class="button" ng-href="#/adduser">Add User</a>
+</div>
+
 <ul>
     <li class="user-list" ng-repeat="user in users">
+        <hr>
         <div class="row">
             <div class="small-4 columns"><a ng-href="#/userdetails/{{user._id}}">{{user.name}}</a></div>
             <div class="small-4 columns">{{user.email}}</div>
             <div class="small-4 columns text-right"><button class="alert button" ng-click="remove(user._id)">Delete</button></div>
         </div>
+
     </li>
 </ul>

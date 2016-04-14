@@ -1,36 +1,64 @@
-<div class="small-8 small-centered columns">
-    <span><h1>Tasks</h1><h3>really important stuff</h3></span>
-    <a class="button" ng-href="#/addtask">Add Task</a>
-    <br>
-    <!-- <input type="radio" name="sorter" ng-click="sortBy = false"> Pending
-    <input type="radio" name="sorter" ng-click="sortBy = true"> Completed
-    <input type="radio" name="sorter" ng-click="sortBy = all"> All -->
-    <input type="radio" ng-model="sorter" ng-value="0"> Pending
-    <input type="radio" ng-model="sorter" ng-value="1"> Completed
-    <input type="radio" ng-model="sorter" ng-value="2"> All
-    <br>
-    <span>Sort By:</span>
-    <select ng-model="sortWith">
-        <option ng-value="dateCreated">dateCreated</option>
-        <option selected ng-value="deadline">deadline</option>
-        <option ng-value="name">name</option>
-        <option ng-value="assignedUserName">assignedUserName</option>
-    </select>
-
-    <input type="radio" ng-model="order" ng-value="true" selected> Ascending
-    <input type="radio" ng-model="order" ng-value="false"> Descending
-    <button type="button" class="disabled button" id="prev"name="previous" ng-click="previous()">Previous</button>
-    <button type="button" class="button" id="next" name="button" ng-click="next()">Next</button>
-    <ul>
-        <!-- |orderBy: sortWith: order -->
-        <li class="task-list" ng-repeat="task in tasks">
+    <div class="row">
+        <div class="small-10 columns">
+            <span><strong>Tasks</strong></span><span> really important stuff</span>
+        </div>
+        <div class="small-2 columns">
+            <a class="button text-center" ng-href="#/addtask">Add Task</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-4 columns">
+            <input type="radio" ng-model="sorter" ng-value="0"> Pending
+            <input type="radio" ng-model="sorter" ng-value="1"> Completed
+            <input type="radio" ng-model="sorter" ng-value="2"> All
+        </div>
+        <div class="small-4 columns">
+            <span>Sort By:</span>
+            <select ng-model="sortWith">
+                <option ng-value="dateCreated">dateCreated</option>
+                <option selected ng-value="deadline">deadline</option>
+                <option ng-value="name">name</option>
+                <option ng-value="assignedUserName">assignedUserName</option>
+            </select>
+        </div>
+        <div class="small-4 columns">
             <div class="row">
-                <div class="small-3 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
-                <div class="small-3 columns">{{task.deadline}}</div>
-                <div class="small-3 columns">{{task.assignedUserName}}</div>
-                <div class="small-3 columns text-right"><button class="alert button" ng-click="remove(task._id)">Delete</button></div>
+                <div class="small-12 columns">
+                    <input type="radio" ng-model="order" ng-value="true" selected> Ascending
+                </div>
+                <div class="small-12 columns">
+                    <input type="radio" ng-model="order" ng-value="false"> Descending
+                </div>
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
 
-</div>
+    <div class="row">
+        <div class="small-6 columns text-left">
+            <button type="button" class="disabled button" id="prev"name="previous" ng-click="previous()">Previous</button>
+        </div>
+        <div class="small-6 columns text-right">
+            <button type="button" class="button" id="next" name="button" ng-click="next()">Next</button>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="small-12 columns">
+            <ul>
+                <li class="task-list" ng-repeat="task in tasks">
+                    <div class="row">
+                        <div class="small-3 columns"><a ng-href="#/taskdetails/{{task._id}}">{{task.name}}</a></div>
+                        <div class="small-7 columns text-right">
+                            <div class="row">
+                                <div class="small-12 columns">Deadline: {{task.deadline}}</div>
+                                <div class="small-12 columns">Assigned to {{task.assignedUserName}}</div>
+                            </div>
+                        </div>
+                        <div class="small-2 columns text-right"><button class="alert button" ng-click="remove(task._id)">Delete</button></div>
+                    </div>
+                    <hr>
+
+                </li>
+            </ul>
+        </div>
+    </div>
