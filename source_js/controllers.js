@@ -219,13 +219,10 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
 // Make it so if marked complete remove from users pending tasks
     $scope.complete = function(task){
         task.completed = true;
-        console.log(task.assignedUser);
-        console.log(task.assignedUserName);
         $scope.ownerID = task.assignedUser;
 
         Users.getUser($scope.ownerID).success(function(response){
             $scope.user = response.data;
-            // console.log($scope.user.pendingTasks);
             $scope.index = $scope.user.pendingTasks.indexOf(task._id);
             if ($scope.index !== -1) {
                 $scope.user.pendingTasks.splice($scope.index, 1);
@@ -264,21 +261,13 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
     });
     $scope.updateTask = function(task){
         // console.log(task);
-        console.log(task.assignedUserName)
         Users.getUser(task.assignedUser).success(function(response){
             $scope.user = response.data;
-            // console.log("New user")
-            // console.log($scope.user);
-            // console.log(task.assignedUser);
-            // console.log(task.assignedUserName);
-            // console.log(response.data.name);
-            // console.log(response.data);
             if(task.completed === true || task.completed === "true"){
                 $scope.index = $scope.user.pendingTasks.indexOf(task._id);
                 if ($scope.index !== -1) {
                     $scope.user.pendingTasks.splice($scope.index, 1);
                 }
-                alert($scope.user.pendingTasks)
                 Users.put($scope.user).success(function(response){
                 });
             }else{
