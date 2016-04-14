@@ -69,10 +69,7 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
     $scope.remove = function(id){
         Tasks.getTask(id).success(function(task_data){
             $scope.ownerID = task_data.data.assignedUser;
-            alert($scope.ownerID);
-            console.log(task_data.data);
             if($scope.ownerID != ""){
-                console.log($scope.ownerID);
                 Users.getUser($scope.ownerID).success(function(response){
                     $scope.user = response.data;
                     // console.log($scope.user.pendingTasks);
