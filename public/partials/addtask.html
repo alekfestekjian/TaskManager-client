@@ -1,31 +1,37 @@
-<form name="addTaskForm" novalidate> <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
 
-       <!-- NAME -->
-        <div class="form-group">
-          <label>Name <span class="required"> *</span></label>
-          <input type="text" name="name" class="form-control" ng-model="task.name" required>
-          <p ng-show="userForm.name.$invalid" class="help-block">You name is required.</p>
-        </div>
-        <!-- Description -->
-        <div class="form-group">
-          <label>Description</label>
-          <input type="text" name="description" class="form-control" ng-model="task.description">
-        </div>
-        <!-- Date -->
-        <div class="form-group">
-         <label>Deadline<span class="required"> *</span></label>
-         <datepicker><input ng-model="task.deadline" type="text"/></datepicker>
-        </div>
+<div class="row">
+    <div class="small-6 columns">
+        <span class="title">Tasks</span><span class="description"> staying occupied</span>
+        <form name="addTaskForm" novalidate> <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
 
-        <div class="form-group">
-            <label>Assigned User</label>
-            <select ng-model="task.assignedUser">
-                <option ng-repeat="user in users" value="{{user._id}}">{{user.name}}</option>
-            </select>
-        </div>
-        Completed:
+               <!-- NAME -->
+                <div class="form-group">
+                  <label>Name <span class="required"> *</span></label>
+                  <input type="text" name="name" class="form-control" ng-model="task.name" required>
+                  <p ng-show="userForm.name.$invalid" class="help-block">You name is required.</p>
+                </div>
+                <!-- Description -->
+                <div class="form-group">
+                  <label>Description</label>
+                  <input type="text" name="description" class="form-control" ng-model="task.description">
+                </div>
+                <!-- Date -->
+                <div class="form-group">
+                 <label>Deadline<span class="required"> *</span></label>
+                 <datepicker><input ng-model="task.deadline" type="text"/></datepicker>
+                </div>
 
-       <!-- SUBMIT BUTTON -->
-       <button type="submit" ng-click="addTask(task)" class="button info">Submit</button>
+                <div class="form-group">
+                    <label>Assigned User</label>
+                    <select ng-model="task.assignedUser">
+                        <option ng-repeat="user in users" value="{{user._id}}">{{user.name}}</option>
+                    </select>
+                </div>
 
- </form>
+               <!-- SUBMIT BUTTON -->
+               <button type="submit" ng-click="addTask(task)" class="button info text-center">Submit</button>
+
+         </form>
+    </div>
+
+</div>

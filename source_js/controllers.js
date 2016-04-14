@@ -28,7 +28,6 @@ mp4Controllers.controller('AddTaskController', ['$scope','$http','$window' ,'Tas
 mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Users', function($scope, $http,$window,Users) {
     $scope.addUser = function(user){
         Users.post(user).then(function(response,data) {
-            console.log(response.data);
             alert(response.data.message);
         },function failure(fail_response){
             alert(fail_response.data.message);
@@ -76,8 +75,9 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
     $scope.remove = function(id){
         Tasks.getTask(id).success(function(task_data){
             $scope.ownerID = task_data.data.assignedUser;
-            alert($scope.ownerID);
+            // alert($scope.ownerID);
             if($scope.ownerID != "unassigned"){
+                console.log($scope.ownerID);
                 Users.getUser($scope.ownerID).success(function(response){
                     $scope.user = response.data;
                     // console.log($scope.user.pendingTasks);
@@ -86,7 +86,6 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
                         $scope.user.pendingTasks.splice($scope.index, 1);
                     }
                     Users.put($scope.user).success(function(response){
-                        alert("pushed user");
                     });
 
                     Tasks.remove(id).success(function(delete_data){
@@ -94,6 +93,7 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
                         // Tasks.getLimitTasks($scope.startNum).success(function(data){
                         //     $scope.tasks = data.data;
                         // });
+                        alert("Task deleted");
                         Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
                             console.log("updating task");
                             $scope.tasks = data.data;
@@ -112,6 +112,7 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
                     // Tasks.getLimitTasks($scope.startNum).success(function(data){
                     //     $scope.tasks = data.data;
                     // });
+                    alert("Task deleted");
                     Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
                         console.log("updating task");
                         $scope.tasks = data.data;
@@ -223,6 +224,21 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
 // Make it so if marked complete remove from users pending tasks
     $scope.complete = function(task){
         task.completed = true;
+        console.log(task.assignedUser);
+        console.log(task.assignedUserName);
+        $scope.ownerID = task.assignedUser;
+
+        Users.getUser($scope.ownerID).success(function(response){
+            $scope.user = response.data;
+            // console.log($scope.user.pendingTasks);
+            $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+            if ($scope.index !== -1) {
+                $scope.user.pendingTasks.splice($scope.index, 1);
+            }
+            Users.put($scope.user).success(function(response){
+            });
+
+        });
         Tasks.put(task).success(function(data){
             Tasks.getPendingTasks($scope.id).success(function(data){
                 $scope.pendingTasks = data.data;
@@ -238,20 +254,89 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
 
 }]);
 mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http','$window' ,'Tasks','Users', function($scope,$routeParams, $http,$window,Tasks,Users) {
-
+    $scope.oldUser_id = ""
     Users.get().success(function(data){
         $scope.users = data.data;
 
         Tasks.getTask($routeParams.task_id).success(function(response) {
             $scope.task = response.data;
+            // console.log($scope.task)
+            $scope.oldUser_id = $scope.task.assignedUser
+            Users.getUser($scope.oldUser_id).success(function(response){
+                $scope.oldUser = response.data;
+                console.log("Old user")
+                console.log($scope.oldUser)
+            });
         });
     });
-
     $scope.updateTask = function(task){
+        // console.log(task);
+        console.log(task.assignedUserName)
         Users.getUser(task.assignedUser).success(function(response){
+            $scope.user = response.data;
+            // console.log("New user")
+            // console.log($scope.user);
+            // console.log(task.assignedUser);
+            // console.log(task.assignedUserName);
+            // console.log(response.data.name);
+            // console.log(response.data);
+            alert(typeof(task.completed));
+            if(task.completed === true || task.completed === "true"){
+                alert("task has become complete");
+                alert($scope.user.pendingTasks)
+                $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                if ($scope.index !== -1) {
+                    $scope.user.pendingTasks.splice($scope.index, 1);
+                }
+                alert($scope.user.pendingTasks)
+                Users.put($scope.user).success(function(response){
+                });
+            }else{
+                alert("False")
+                // if(task.assignedUserName === "unassigned"){
+                //     console.log("unassigned")
+                // }
+                if($scope.oldUser_id === task.assignedUser){
+                    alert("User hasn't changed")
+                    console.log($scope.user)
+                    $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                    if($scope.index > -1){
+
+                    }else{
+                        $scope.user.pendingTasks.push(task._id);
+                    }
+                    Users.put($scope.user).success(function(data){
+                    });
+                }else{
+                    alert("User has changed")
+                    //removing pending task to
+                    $scope.index = $scope.oldUser.pendingTasks.indexOf(task._id);
+                    if ($scope.index !== -1) {
+                        $scope.oldUser.pendingTasks.splice($scope.index, 1);
+                    }
+                    Users.put($scope.oldUser).success(function(response){
+                    });
+                    //adding pending task to new User
+                    $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                    if($scope.index > -1){
+
+                    }else{
+                        $scope.user.pendingTasks.push(task._id);
+                    }
+                    console.log("New user:")
+                    console.log($scope.user)
+                    console.log("Old user:")
+                    console.log($scope.oldUser)
+                    Users.put($scope.user).success(function(data){
+                    });
+                }
+
+            }
+
+
             task.assignedUserName = response.data.name;
             Tasks.put(task).then(function(response) {
-                alert(response.data.message);
+                // alert(response.data.message);
             },function failure(fail_response){
                 alert(fail_response.data.message);
             });
