@@ -42,14 +42,11 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
     $scope.sortWith = "deadline";
     $scope.valuesSort = [$scope.sorter,$scope.ascending,$scope.sortWith];
     Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
-        console.log("updating task");
         $scope.tasks = data.data;
     });
 
     Tasks.getSortingLength($scope.valuesSort,$scope.startNum).success(function(data){
-        console.log("getting len task");
         $scope.taskLen = data.data.length;
-        console.log($scope.taskLen);
     });
 
     $scope.$watchGroup(['sorter','order','sortWith'], function(newValue, oldValue) {
@@ -57,14 +54,11 @@ mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Ta
         if(newValue[0] != oldValue[0]){
             $scope.startNum = 0;
             Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
-                console.log("updating task");
                 $scope.tasks = data.data;
-                console.log($scope.taskLen);
             });
         }
         else{
             Tasks.updateSorting($scope.valuesSort,$scope.startNum).success(function(data){
-                console.log("updating task");
                 $scope.tasks = data.data;
             });
         }
@@ -265,8 +259,6 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
             $scope.oldUser_id = $scope.task.assignedUser
             Users.getUser($scope.oldUser_id).success(function(response){
                 $scope.oldUser = response.data;
-                console.log("Old user")
-                console.log($scope.oldUser)
             });
         });
     });
@@ -281,10 +273,7 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
             // console.log(task.assignedUserName);
             // console.log(response.data.name);
             // console.log(response.data);
-            alert(typeof(task.completed));
             if(task.completed === true || task.completed === "true"){
-                alert("task has become complete");
-                alert($scope.user.pendingTasks)
                 $scope.index = $scope.user.pendingTasks.indexOf(task._id);
                 if ($scope.index !== -1) {
                     $scope.user.pendingTasks.splice($scope.index, 1);
@@ -293,13 +282,8 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
                 Users.put($scope.user).success(function(response){
                 });
             }else{
-                alert("False")
-                // if(task.assignedUserName === "unassigned"){
-                //     console.log("unassigned")
-                // }
+
                 if($scope.oldUser_id === task.assignedUser){
-                    alert("User hasn't changed")
-                    console.log($scope.user)
                     $scope.index = $scope.user.pendingTasks.indexOf(task._id);
                     if($scope.index > -1){
 
@@ -309,8 +293,6 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
                     Users.put($scope.user).success(function(data){
                     });
                 }else{
-                    alert("User has changed")
-                    //removing pending task to
                     $scope.index = $scope.oldUser.pendingTasks.indexOf(task._id);
                     if ($scope.index !== -1) {
                         $scope.oldUser.pendingTasks.splice($scope.index, 1);
@@ -324,10 +306,6 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
                     }else{
                         $scope.user.pendingTasks.push(task._id);
                     }
-                    console.log("New user:")
-                    console.log($scope.user)
-                    console.log("Old user:")
-                    console.log($scope.oldUser)
                     Users.put($scope.user).success(function(data){
                     });
                 }
@@ -337,7 +315,7 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
 
             task.assignedUserName = response.data.name;
             Tasks.put(task).then(function(response) {
-                // alert(response.data.message);
+                alert("Task has been updated")
             },function failure(fail_response){
                 alert(fail_response.data.message);
             });
