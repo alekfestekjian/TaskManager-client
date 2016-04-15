@@ -6,32 +6,53 @@ mp4Controllers.controller('AddTaskController', ['$scope','$http','$window' ,'Tas
     });
 
     $scope.addTask = function(task){
-        if(typeof(task.assignedUser) == "undefined"){
-            task.assignedUser = ""
-        }
-        Users.getUser(task.assignedUser).success(function(response){
-            $scope.user_info = response.data;
-            task.assignedUserName = response.data.name;
-            Tasks.post(task).then(function(response) {
-                $scope.user_id = response.data.data._id;
-                $scope.user_info.pendingTasks.push($scope.user_id);
-                Users.put($scope.user_info).success(function(data){
+
+        if(typeof(task.name) === "undefined" || typeof(task.deadline) === "undefined"){
+            console.log("FAIL")
+            return;
+        }else{
+            if(typeof(task.assignedUser) == "undefined"){
+                task.assignedUser = ""
+            }
+            Users.getUser(task.assignedUser).success(function(response){
+                $scope.user_info = response.data;
+                task.assignedUserName = response.data.name;
+                Tasks.post(task).then(function(response) {
+                    $scope.user_id = response.data.data.assignedUser;
+                    console.log("USER ID FROM TASK")
+                    console.log($scope.user_id)
+                    if($scope.user_id !== ""){
+                        $scope.user_info.pendingTasks.push($scope.user_id);
+                        console.log("USER INFO")
+                        console.log($scope.user_info)
+                        Users.put($scope.user_info).success(function(data){
+                        });
+                    }
+                    alert(response.data.message);
+                },function failure(fail_response){
+                    alert(fail_response.data.message);
                 });
-                alert(response.data.message);
-            },function failure(fail_response){
-                alert(fail_response.data.message);
             });
-        });
+
+        }
+
     };
 
 }]);
 mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Users', function($scope, $http,$window,Users) {
     $scope.addUser = function(user){
-        Users.post(user).then(function(response,data) {
-            alert(response.data.message);
-        },function failure(fail_response){
-            alert(fail_response.data.message);
-        });
+        if(typeof(user.name) === "undefined" || typeof(user.email) === "undefined"){
+            console.log("FAIL")
+            return;
+        }
+        else{
+            Users.post(user).then(function(response,data) {
+                alert(response.data.message);
+            },function failure(fail_response){
+                alert(fail_response.data.message);
+            });
+        }
+
     };
 }]);
 mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks','Users', function($scope, $http,$window,Tasks,Users){
@@ -225,15 +246,18 @@ mp4Controllers.controller('UserDetailsController', ['$scope',  '$routeParams', '
             if ($scope.index !== -1) {
                 $scope.user.pendingTasks.splice($scope.index, 1);
             }
+            console.log($scope.user)
             Users.put($scope.user).success(function(response){
+                console.log(task)
+                Tasks.put(task).success(function(data){
+                    Tasks.getPendingTasks($scope.id).success(function(data){
+                        $scope.pendingTasks = data.data;
+                    });
+                });
             });
 
         });
-        Tasks.put(task).success(function(data){
-            Tasks.getPendingTasks($scope.id).success(function(data){
-                $scope.pendingTasks = data.data;
-            });
-        });
+
     }
     $scope.showComplete = function(){
         $scope.showCompleted = true
