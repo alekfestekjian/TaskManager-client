@@ -18,13 +18,11 @@ mp4Controllers.controller('AddTaskController', ['$scope','$http','$window' ,'Tas
                 $scope.user_info = response.data;
                 task.assignedUserName = response.data.name;
                 Tasks.post(task).then(function(response) {
+                    console.log(response.data.data._id)
+                    $scope.taskID = response.data.data._id
                     $scope.user_id = response.data.data.assignedUser;
-                    console.log("USER ID FROM TASK")
-                    console.log($scope.user_id)
                     if($scope.user_id !== ""){
-                        $scope.user_info.pendingTasks.push($scope.user_id);
-                        console.log("USER INFO")
-                        console.log($scope.user_info)
+                        $scope.user_info.pendingTasks.push($scope.taskID);
                         Users.put($scope.user_info).success(function(data){
                         });
                     }
@@ -58,7 +56,7 @@ mp4Controllers.controller('AddUserController', ['$scope','$http','$window' ,'Use
 mp4Controllers.controller('TaskListController', ['$scope','$http','$window' ,'Tasks','Users', function($scope, $http,$window,Tasks,Users){
     $scope.startNum = 0;
 
-    $scope.sorter = 1;
+    $scope.sorter = 0;
     $scope.order = 1;
     $scope.sortWith = "deadline";
     $scope.valuesSort = [$scope.sorter,$scope.ascending,$scope.sortWith];
