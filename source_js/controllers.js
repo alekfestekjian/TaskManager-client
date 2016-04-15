@@ -203,6 +203,14 @@ mp4Controllers.controller('UserListController', ['$scope','$http','$window' ,'Us
                 Tasks.put($scope.tasks[i]);
             }
         });
+        Tasks.getCompletedTasks(id).success(function(data){
+            $scope.tasks = data.data;
+            for(var i = 0; i < $scope.tasks.length; i++){
+                $scope.tasks[i].assignedUser = "";
+                $scope.tasks[i].assignedUserName = "unassigned";
+                Tasks.put($scope.tasks[i]);
+            }
+        });
         Users.remove(id).success(function(delete_data){
             alert("User removed")
             Users.get().success(function(reload){
