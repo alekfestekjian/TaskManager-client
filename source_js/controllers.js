@@ -276,61 +276,78 @@ mp4Controllers.controller('EditTaskController', ['$scope','$routeParams', '$http
             $scope.task = response.data;
             // console.log($scope.task)
             $scope.oldUser_id = $scope.task.assignedUser
-            Users.getUser($scope.oldUser_id).success(function(response){
-                $scope.oldUser = response.data;
-            });
+            if($scope.oldUser_id){
+                Users.getUser($scope.oldUser_id).success(function(response){
+                    $scope.oldUser = response.data;
+                });
+            }
+
         });
     });
     $scope.updateTask = function(task){
         // console.log(task);
-        Users.getUser(task.assignedUser).success(function(response){
-            $scope.user = response.data;
-            if(task.completed === true || task.completed === "true"){
-                $scope.index = $scope.user.pendingTasks.indexOf(task._id);
-                if ($scope.index !== -1) {
-                    $scope.user.pendingTasks.splice($scope.index, 1);
-                }
-                Users.put($scope.user).success(function(response){
-                });
-            }else{
-
-                if($scope.oldUser_id === task.assignedUser){
-                    $scope.index = $scope.user.pendingTasks.indexOf(task._id);
-                    if($scope.index > -1){
-
-                    }else{
-                        $scope.user.pendingTasks.push(task._id);
-                    }
-                    Users.put($scope.user).success(function(data){
-                    });
-                }else{
-                    $scope.index = $scope.oldUser.pendingTasks.indexOf(task._id);
-                    if ($scope.index !== -1) {
-                        $scope.oldUser.pendingTasks.splice($scope.index, 1);
-                    }
-                    Users.put($scope.oldUser).success(function(response){
-                    });
-                    //adding pending task to new User
-                    $scope.index = $scope.user.pendingTasks.indexOf(task._id);
-                    if($scope.index > -1){
-
-                    }else{
-                        $scope.user.pendingTasks.push(task._id);
-                    }
-                    Users.put($scope.user).success(function(data){
-                    });
-                }
-
-            }
-
-
-            task.assignedUserName = response.data.name;
+        if(task.assignedUser === ""){
             Tasks.put(task).then(function(response) {
                 alert("Task has been updated")
             },function failure(fail_response){
                 alert(fail_response.data.message);
             });
-        });
+        }else{
+            Users.getUser(task.assignedUser).success(function(response){
+                $scope.user = response.data;
+                console.log($scope.user);
+                if(task.completed === true || task.completed === "true"){
+
+                    $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                    if ($scope.index !== -1) {
+                        $scope.user.pendingTasks.splice($scope.index, 1);
+                    }
+                    Users.put($scope.user).success(function(response){
+                    });
+                }else{
+
+                    if($scope.oldUser_id === task.assignedUser){
+
+                        $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                        if($scope.index > -1){
+
+                        }else{
+                            $scope.user.pendingTasks.push(task._id);
+                        }
+                        Users.put($scope.user).success(function(data){
+                        });
+                    }else{
+                        if($scope.oldUser_id){
+                            $scope.index = $scope.oldUser.pendingTasks.indexOf(task._id);
+                            if ($scope.index !== -1) {
+                                $scope.oldUser.pendingTasks.splice($scope.index, 1);
+                            }
+                            Users.put($scope.oldUser).success(function(response){
+                            });
+                        }
+                        //adding pending task to new User
+                        $scope.index = $scope.user.pendingTasks.indexOf(task._id);
+                        if($scope.index > -1){
+
+                        }else{
+                            $scope.user.pendingTasks.push(task._id);
+                        }
+                        Users.put($scope.user).success(function(data){
+                        });
+                    }
+
+                }
+
+
+                task.assignedUserName = response.data.name;
+                Tasks.put(task).then(function(response) {
+                    alert("Task has been updated")
+                },function failure(fail_response){
+                    alert(fail_response.data.message);
+                });
+            });
+
+        }
 
     };
 }]);
